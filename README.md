@@ -68,6 +68,17 @@ flowchart LR
 
 🇫🇷 **FR - Deux stratégies d'optimisation, une même tâche de classification.** Le projet compare la façon dont un réseau feedforward et l'optimisation par essaim particulaire (PSO) transforment les mêmes 30 mesures en l'une des deux classes. Le réseau apprend par rétropropagation ; le PSO recherche directement les poids d'un classifieur linéaire seuillé.
 
+```mermaid
+flowchart LR
+    A["30 mesures<br/>échelles d'origine"] --> B{"Stratégie d'optimisation"}
+    B --> C["Réseau feedforward<br/>30 neurones cachés · trainlm · MSE"]
+    B --> D["PSO<br/>30 poids du classifieur<br/>50 particules · jusqu'à 1 000 itérations"]
+    C --> E["Seuil à 3"]
+    D --> E
+    E --> F["Codes de classe 2 ou 4"]
+    F --> G["Résultats sur tout le jeu<br/>pas un test indépendant"]
+```
+
 - **La comparaison porte sur l'optimisation, pas seulement sur le modèle.** Le réseau utilise Levenberg–Marquardt (`trainlm`) et le rapport décrit une validation croisée à 20 partitions ; le PSO utilise 10 partitions. Les deux méthodes classent finalement à l'aide d'un seuil de 3, situé à mi-chemin entre les codes de classe 2 et 4.
 - **Le code versionné fait foi.** `lab4.m` définit `purelin` pour les deux couches du réseau : l'implémentation est donc linéaire, même si le rapport décrit aussi une expérience non linéaire. Les caractéristiques ne sont pas normalisées, malgré la présence d'une fonction min-max qui n'est pas utilisée.
 - **Les résultats doivent être nuancés.** Le réseau est réutilisé d'une partition à l'autre et la sélection du meilleur modèle n'est pas correctement mise à jour ; les résultats finaux sont ensuite calculés sur l'ensemble des données. La comparaison ne constitue donc pas une évaluation indépendante et rigoureuse de la généralisation.
