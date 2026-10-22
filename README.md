@@ -85,7 +85,18 @@ flowchart LR
 
 ## Results and learnings / Résultats et apprentissages
 
-🇬🇧 **EN -** The report gives the following results for its experiments. The matrices list actual and predicted classes in the order `2` (malignant), `4` (benign):
+🇬🇧 **EN - High accuracy is not the whole story.** The report’s figures look strong, but they come from experiments that are not consistently reproduced by the checked-in script, and overall accuracy hides errors on malignant cases. The diagram summarizes the archived confusion matrices; each matrix lists actual and predicted classes in the order `2` (malignant), `4` (benign).
+
+```mermaid
+flowchart LR
+    A["Nonlinear network<br/>described in report"] --> A1["99.12% accuracy<br/>5 malignant cases classified as benign"]
+    B["PSO"] --> B1["97.54% accuracy<br/>11 malignant cases classified as benign"]
+    C["Linear-activation network"] --> C1["96.13% accuracy<br/>21 malignant cases classified as benign"]
+    A1 --> D["Archived confusion matrices"]
+    B1 --> D
+    C1 --> D
+    D --> E["Not an independent evaluation<br/>not clinical performance"]
+```
 
 | Experiment | Reported result or calculation | Archived confusion matrix |
 | --- | ---: | ---: |
@@ -93,15 +104,24 @@ flowchart LR
 | PSO | 555/569 = 97.53% in the report; 97.54% from the counts | `[[201, 11], [3, 354]]` |
 | Linear-activation network | 96.31% in the report; 547/569 = 96.13% from its archived matrix | `[[191, 21], [1, 356]]` |
 
-The corresponding matrices are available for the [network](medias/nn_confusion_matrix.png), [PSO](medias/pso_confusion_matrix.png), and [linear network](medias/nn_linear_confusion_matrix.png). The report contradicts itself about the network: it mentions five malignant samples predicted as benign, then claims there were none; the archived matrix confirms five such errors. For PSO, the report states that three malignant samples were predicted as benign; however, reading the archived matrix in actual/predicted class order `2`, `4` shows 11 such errors. The linear-network matrix shows 21 malignant samples predicted as benign and one benign sample predicted as malignant. The image labels are `1` and `2` because the charts were generated from matrix counts; they correspond to classes `2` and `4`, respectively. These differences matter because overall accuracy alone does not show which class is misclassified.
+The archived matrices are available for the [network](medias/nn_confusion_matrix.png), [PSO](medias/pso_confusion_matrix.png), and [linear network](medias/nn_linear_confusion_matrix.png). They reveal why accuracy alone can mislead: the number of malignant cases predicted as benign ranges from 5 to 21. The report itself is inconsistent: it first mentions five such network errors, then says there were none; for PSO it says three, while the matrix shows 11. The confusion-chart labels `1` and `2` correspond to class codes `2` and `4`, respectively.
 
-These figures are not an independent evaluation and must not be interpreted as clinical performance. The report's 96.31% for the linear network also differs from the 547 correct predictions out of 569 visible in its archived matrix (96.13%). Finally, the currently versioned script explicitly sets linear activations, so it does not directly reproduce the nonlinear-network experiment associated with the report's 99.12%. The saved figures represent different experiments and are not all outputs of one consistent run of the current script.
-
-A more reliable comparison would fit an independent model in each fold, update best-model selection correctly, fit normalization only on training data, and reserve a final test set or use nested cross-validation. It should also fix random seeds, preserve experiment settings alongside saved figures, and report per-class metrics in addition to accuracy, given the class imbalance.
+Treat these numbers as reported project results, not as a reliable estimate of generalization or clinical performance. The checked-in script uses linear activations, so it does not reproduce the nonlinear network associated with 99.12%; saved figures also come from different experiments. A stronger comparison would initialize an independent model per fold, fix model selection and random seeds, normalize using training data only, and reserve an independent test set (or use nested cross-validation). Reporting per-class metrics alongside accuracy would make class-specific errors visible.
 
 <br>
 
-🇫🇷 **FR -** Le rapport présente les résultats suivants pour ses expériences. Les matrices indiquent les classes réelles puis prédites dans l'ordre `2` (malin), `4` (bénin) :
+🇫🇷 **FR - Une forte exactitude ne dit pas tout.** Les chiffres du rapport paraissent élevés, mais ils proviennent d'expériences que le script versionné ne reproduit pas toutes de façon cohérente, et l'exactitude globale masque les erreurs sur les cas malins. Le diagramme résume les matrices de confusion archivées ; chaque matrice indique les classes réelles puis prédites dans l'ordre `2` (malin), `4` (bénin).
+
+```mermaid
+flowchart LR
+    A["Réseau non linéaire<br/>décrit dans le rapport"] --> A1["99,12 % d'exactitude<br/>5 cas malins classés bénins"]
+    B["PSO"] --> B1["97,54 % d'exactitude<br/>11 cas malins classés bénins"]
+    C["Réseau à activations linéaires"] --> C1["96,13 % d'exactitude<br/>21 cas malins classés bénins"]
+    A1 --> D["Matrices de confusion archivées"]
+    B1 --> D
+    C1 --> D
+    D --> E["Pas une évaluation indépendante<br/>ni une performance clinique"]
+```
 
 | Expérience | Résultat rapporté ou calculé | Matrice de confusion archivée |
 | --- | ---: | ---: |
@@ -109,11 +129,9 @@ A more reliable comparison would fit an independent model in each fold, update b
 | PSO | 555/569 = 97,53 % dans le rapport ; 97,54 % d'après les comptes | `[[201, 11], [3, 354]]` |
 | Réseau à activations linéaires | 96,31 % dans le rapport ; 547/569 = 96,13 % d'après sa matrice archivée | `[[191, 21], [1, 356]]` |
 
-Les matrices correspondantes sont disponibles pour le [réseau](medias/nn_confusion_matrix.png), le [PSO](medias/pso_confusion_matrix.png) et le [réseau linéaire](medias/nn_linear_confusion_matrix.png). Le rapport se contredit au sujet du réseau : il mentionne cinq échantillons malins prédits bénins, puis affirme qu'il n'y en a aucun ; la matrice archivée confirme cinq erreurs de ce type. Pour le PSO, le rapport indique trois échantillons malins prédits bénins ; toutefois, la matrice archivée, lue dans l'ordre des classes réelles et prédites `2`, `4`, en montre 11. La matrice du réseau linéaire montre 21 échantillons malins prédits bénins et un échantillon bénin prédit malin. Les graphiques affichent les étiquettes `1` et `2`, car ils sont tracés à partir des comptes matriciels ; elles correspondent respectivement aux classes `2` et `4`. Ces écarts sont importants, car l'exactitude globale ne montre pas quelle classe est mal classée.
+Les matrices archivées sont disponibles pour le [réseau](medias/nn_confusion_matrix.png), le [PSO](medias/pso_confusion_matrix.png) et le [réseau linéaire](medias/nn_linear_confusion_matrix.png). Elles montrent pourquoi l'exactitude seule peut être trompeuse : le nombre de cas malins prédits bénins varie de 5 à 21. Le rapport se contredit : il mentionne d'abord cinq erreurs de ce type pour le réseau, puis affirme qu'il n'y en a aucune ; pour le PSO, il en annonce trois alors que la matrice en montre 11. Les étiquettes `1` et `2` des graphiques de confusion correspondent respectivement aux codes de classe `2` et `4`.
 
-Ces chiffres ne constituent pas une évaluation indépendante et ne doivent pas être interprétés comme une performance clinique. Les 96,31 % annoncés dans le rapport pour le réseau linéaire diffèrent aussi des 547 prédictions correctes sur 569 visibles dans sa matrice archivée (96,13 %). Enfin, le script actuellement versionné impose des activations linéaires ; il ne reproduit donc pas directement l'expérience de réseau non linéaire associée aux 99,12 % du rapport. Les figures sauvegardées représentent différentes expériences et ne proviennent pas toutes d'une même exécution cohérente du script actuel.
-
-Une comparaison plus fiable consisterait à entraîner un modèle indépendant dans chaque partition, à corriger la sélection du meilleur modèle, à ajuster la normalisation uniquement sur les données d'entraînement, puis à réserver un jeu de test final ou à utiliser une validation croisée imbriquée. Il faudrait également fixer les graines aléatoires, conserver les paramètres des expériences avec les figures sauvegardées et rapporter des métriques par classe en plus de l'exactitude, compte tenu du déséquilibre des classes.
+Ces chiffres sont des résultats rapportés pour le projet, pas une estimation fiable de la généralisation ni une performance clinique. Le script versionné utilise des activations linéaires : il ne reproduit donc pas le réseau non linéaire associé aux 99,12 %. Les figures archivées proviennent également d'expériences différentes. Une comparaison plus solide entraînerait un modèle indépendant par partition, corrigerait la sélection du modèle et fixerait les graines aléatoires, ajusterait la normalisation uniquement sur les données d'entraînement, puis réserverait un jeu de test indépendant (ou utiliserait une validation croisée imbriquée). Des métriques par classe, en complément de l'exactitude, rendraient les erreurs propres à chaque classe plus visibles.
 
 ## Getting started
 
