@@ -85,24 +85,13 @@ flowchart LR
 
 ## Results and learnings / Résultats et apprentissages
 
-🇬🇧 **EN - High accuracy is not the whole story.** The report’s figures look strong, but they come from experiments that are not consistently reproduced by the checked-in script, and overall accuracy hides errors on malignant cases. The diagram summarizes the archived confusion matrices; each matrix lists actual and predicted classes in the order `2` (malignant), `4` (benign).
+🇬🇧 **EN - High accuracy is not the whole story.** The report’s figures look strong, but they come from experiments that are not consistently reproduced by the checked-in script, and overall accuracy hides errors on malignant cases.
 
-```mermaid
-flowchart LR
-    A["Nonlinear network<br/>described in report"] --> A1["99.12% accuracy<br/>5 malignant cases classified as benign"]
-    B["PSO"] --> B1["97.54% accuracy<br/>11 malignant cases classified as benign"]
-    C["Linear-activation network"] --> C1["96.13% accuracy<br/>21 malignant cases classified as benign"]
-    A1 --> D["Archived confusion matrices"]
-    B1 --> D
-    C1 --> D
-    D --> E["Not an independent evaluation<br/>not clinical performance"]
-```
-
-| Experiment | Reported result or calculation | Archived confusion matrix |
-| --- | ---: | ---: |
-| Feedforward network described as nonlinear in the report | 564/569 = 99.12% | `[[207, 5], [0, 357]]` |
-| PSO | 555/569 = 97.53% in the report; 97.54% from the counts | `[[201, 11], [3, 354]]` |
-| Linear-activation network | 96.31% in the report; 547/569 = 96.13% from its archived matrix | `[[191, 21], [1, 356]]` |
+| Experiment | Reported result or calculation |
+| --- | ---: |
+| Feedforward network described as nonlinear in the report | 564/569 = 99.12% |
+| PSO | 555/569 = 97.53% in the report; 97.54% from the counts |
+| Linear-activation network | 96.31% in the report; 547/569 = 96.13% from its archived matrix |
 
 The archived matrices are available for the [network](medias/nn_confusion_matrix.png), [PSO](medias/pso_confusion_matrix.png), and [linear network](medias/nn_linear_confusion_matrix.png). They reveal why accuracy alone can mislead: the number of malignant cases predicted as benign ranges from 5 to 21. The report itself is inconsistent: it first mentions five such network errors, then says there were none; for PSO it says three, while the matrix shows 11. The confusion-chart labels `1` and `2` correspond to class codes `2` and `4`, respectively.
 
@@ -110,24 +99,13 @@ Treat these numbers as reported project results, not as a reliable estimate of g
 
 <br>
 
-🇫🇷 **FR - Une forte exactitude ne dit pas tout.** Les chiffres du rapport paraissent élevés, mais ils proviennent d'expériences que le script versionné ne reproduit pas toutes de façon cohérente, et l'exactitude globale masque les erreurs sur les cas malins. Le diagramme résume les matrices de confusion archivées ; chaque matrice indique les classes réelles puis prédites dans l'ordre `2` (malin), `4` (bénin).
+🇫🇷 **FR - Une forte exactitude ne dit pas tout.** Les chiffres du rapport paraissent élevés, mais ils proviennent d'expériences que le script versionné ne reproduit pas toutes de façon cohérente, et l'exactitude globale masque les erreurs sur les cas malins.
 
-```mermaid
-flowchart LR
-    A["Réseau non linéaire<br/>décrit dans le rapport"] --> A1["99,12 % d'exactitude<br/>5 cas malins classés bénins"]
-    B["PSO"] --> B1["97,54 % d'exactitude<br/>11 cas malins classés bénins"]
-    C["Réseau à activations linéaires"] --> C1["96,13 % d'exactitude<br/>21 cas malins classés bénins"]
-    A1 --> D["Matrices de confusion archivées"]
-    B1 --> D
-    C1 --> D
-    D --> E["Pas une évaluation indépendante<br/>ni une performance clinique"]
-```
-
-| Expérience | Résultat rapporté ou calculé | Matrice de confusion archivée |
-| --- | ---: | ---: |
-| Réseau feedforward décrit comme non linéaire dans le rapport | 564/569 = 99,12 % | `[[207, 5], [0, 357]]` |
-| PSO | 555/569 = 97,53 % dans le rapport ; 97,54 % d'après les comptes | `[[201, 11], [3, 354]]` |
-| Réseau à activations linéaires | 96,31 % dans le rapport ; 547/569 = 96,13 % d'après sa matrice archivée | `[[191, 21], [1, 356]]` |
+| Expérience | Résultat rapporté ou calculé |
+| --- | ---: |
+| Réseau feedforward décrit comme non linéaire dans le rapport | 564/569 = 99,12 % |
+| PSO | 555/569 = 97,53 % dans le rapport ; 97,54 % d'après les comptes |
+| Réseau à activations linéaires | 96,31 % dans le rapport ; 547/569 = 96,13 % d'après sa matrice archivée |
 
 Les matrices archivées sont disponibles pour le [réseau](medias/nn_confusion_matrix.png), le [PSO](medias/pso_confusion_matrix.png) et le [réseau linéaire](medias/nn_linear_confusion_matrix.png). Elles montrent pourquoi l'exactitude seule peut être trompeuse : le nombre de cas malins prédits bénins varie de 5 à 21. Le rapport se contredit : il mentionne d'abord cinq erreurs de ce type pour le réseau, puis affirme qu'il n'y en a aucune ; pour le PSO, il en annonce trois alors que la matrice en montre 11. Les étiquettes `1` et `2` des graphiques de confusion correspondent respectivement aux codes de classe `2` et `4`.
 
