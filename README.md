@@ -47,56 +47,69 @@ Le rapport décrit un entraînement et une sélection par validation croisée, s
 
 ## Technical decisions / Choix techniques
 
+🇬🇧 **EN - Two optimization strategies, one classification task.** The project compares how a feedforward network and Particle Swarm Optimization (PSO) turn the same 30 measurements into one of two classes. The network learns through backpropagation; PSO searches directly for the weights of a thresholded linear classifier.
 
-🇬🇧 **EN -** The report compares a feedforward network with 30 hidden units, trained by backpropagation using Levenberg–Marquardt (`trainlm`) and mean squared error (MSE). It describes 20-fold cross-validation for the network. A linear variant changes the hidden and output transfer functions to `purelin`. PSO optimizes the 30 weights of a thresholded weighted sum using 10-fold cross-validation.
+```mermaid
+flowchart LR
+    A["30 measurements<br/>original feature scales"] --> B{"Optimization strategy"}
+    B --> C["Feedforward network<br/>30 hidden units · trainlm · MSE"]
+    B --> D["PSO<br/>30 classifier weights<br/>50 particles · up to 1,000 iterations"]
+    C --> E["Threshold at 3"]
+    D --> E
+    E --> F["Class codes 2 or 4"]
+    F --> G["Full-dataset results<br/>not an independent test"]
+```
 
-`lab4.m` loads `data.mat`, uses `cvpartition`, `feedforwardnet`, `trainlm`, `perform`, and `confusionmat`, then displays plots and confusion matrices. The threshold is 3, the midpoint of class codes 2 and 4. A min-max normalization helper is present but is not called for either model: features remain at their original, substantially different scales. The report says the data is normalized; that is not what the checked-in script does.
-
-The current script explicitly sets `purelin` for both the hidden and output layers. Their composition is still linear, so this network cannot learn a nonlinear decision boundary. The network is created before the cross-validation loop and the same object is trained again from fold to fold rather than initializing an independent model for each fold. Also, `best_perf` is never updated: the condition intended to retain the best network is true on every fold, and `bestNet` ends up containing the network from the final fold.
-
-PSO follows the usual velocity and position updates based on each particle's personal best and the swarm's global best. The parameters in `lab4.m` are 50 particles, up to 1,000 iterations, inertia decreasing from 0.9 to 0.4, and coefficients `c1 = 1.7`, `c2 = 1.75`. The report mentions 100 particles and equal random factors; these statements do not match the current code, which uses 50 particles and draws `r1` and `r2` independently. The weights start randomly and are not constrained after updates. The early-stop condition `MSE < 0.1` is checked before the current particle is recorded as a personal or global best, so a qualifying candidate may be skipped. The code then chooses the fold result with the lowest test MSE and evaluates those weights on the full dataset; that final evaluation is not independent.
+- **The comparison is about the optimizer, not just the model.** The network uses Levenberg–Marquardt (`trainlm`) and the report describes 20-fold cross-validation; PSO uses 10-fold cross-validation. Both ultimately classify with a threshold of 3, halfway between class codes 2 and 4.
+- **The checked-in implementation is the source of truth.** `lab4.m` sets both network layers to `purelin`, so the implemented network is linear—even though the report also describes a nonlinear experiment. It also leaves features unnormalized, despite including an unused min-max helper.
+- **The scores need qualification.** The network is reused across folds and best-model selection is not correctly updated; final figures are then produced on the full dataset. These choices mean the reported results are not a clean, independent comparison of generalization.
 
 <br>
 
-🇫🇷 **FR -** Le rapport compare un réseau feedforward avec 30 neurones cachés, entraîné par rétropropagation avec l'algorithme de Levenberg–Marquardt (`trainlm`) et l'erreur quadratique moyenne (MSE). Il décrit une validation croisée à 20 partitions pour le réseau. Une variante linéaire utilise `purelin` pour les fonctions de transfert des couches cachée et de sortie. Le PSO optimise les 30 poids d'une somme pondérée seuillée avec une validation croisée à 10 partitions.
+🇫🇷 **FR - Deux stratégies d'optimisation, une même tâche de classification.** Le projet compare la façon dont un réseau feedforward et l'optimisation par essaim particulaire (PSO) transforment les mêmes 30 mesures en l'une des deux classes. Le réseau apprend par rétropropagation ; le PSO recherche directement les poids d'un classifieur linéaire seuillé.
 
-`lab4.m` charge `data.mat`, utilise `cvpartition`, `feedforwardnet`, `trainlm`, `perform` et `confusionmat`, puis affiche des graphiques et des matrices de confusion. Le seuil est 3, le milieu entre les codes de classe 2 et 4. Une fonction de normalisation min-max est présente mais n'est appelée pour aucun des deux modèles : les caractéristiques gardent leurs échelles d'origine, très différentes. Le rapport indique que les données sont normalisées ; ce n'est pas le comportement du script versionné.
+```mermaid
+flowchart LR
+    A["30 mesures<br/>échelles d'origine"] --> B{"Stratégie d'optimisation"}
+    B --> C["Réseau feedforward<br/>30 neurones cachés · trainlm · MSE"]
+    B --> D["PSO<br/>30 poids du classifieur<br/>50 particules · jusqu'à 1 000 itérations"]
+    C --> E["Seuil à 3"]
+    D --> E
+    E --> F["Codes de classe 2 ou 4"]
+    F --> G["Résultats sur tout le jeu<br/>pas un test indépendant"]
+```
 
-Le script actuel définit explicitement `purelin` pour les couches cachée et de sortie. Leur composition reste linéaire : ce réseau ne peut donc pas apprendre une frontière de décision non linéaire. Le réseau est créé avant la boucle de validation croisée, puis le même objet est réentraîné d'une partition à l'autre, au lieu d'initialiser un modèle indépendant par partition. De plus, `best_perf` n'est jamais mis à jour : la condition censée conserver le meilleur réseau est vraie à chaque partition et `bestNet` contient finalement le réseau de la dernière partition.
-
-Le PSO suit les mises à jour habituelles de la vitesse et de la position à partir du meilleur résultat personnel de chaque particule et du meilleur résultat global de l'essaim. Dans `lab4.m`, les paramètres sont 50 particules, jusqu'à 1 000 itérations, une inertie décroissant de 0,9 à 0,4 et les coefficients `c1 = 1,7`, `c2 = 1,75`. Le rapport mentionne 100 particules et des facteurs aléatoires égaux ; cela ne correspond pas au code actuel, qui utilise 50 particules et tire `r1` et `r2` indépendamment. Les poids sont initialisés aléatoirement et ne sont pas contraints après leurs mises à jour. La condition d'arrêt anticipé `MSE < 0.1` est vérifiée avant d'enregistrer la particule comme meilleur résultat personnel ou global ; un candidat satisfaisant ce seuil peut donc être ignoré. Le code choisit ensuite le résultat de partition ayant la MSE de test la plus faible, puis évalue ces poids sur l'ensemble des données : cette évaluation finale n'est pas indépendante.
+- **La comparaison porte sur l'optimisation, pas seulement sur le modèle.** Le réseau utilise Levenberg–Marquardt (`trainlm`) et le rapport décrit une validation croisée à 20 partitions ; le PSO utilise 10 partitions. Les deux méthodes classent finalement à l'aide d'un seuil de 3, situé à mi-chemin entre les codes de classe 2 et 4.
+- **Le code versionné fait foi.** `lab4.m` définit `purelin` pour les deux couches du réseau : l'implémentation est donc linéaire, même si le rapport décrit aussi une expérience non linéaire. Les caractéristiques ne sont pas normalisées, malgré la présence d'une fonction min-max qui n'est pas utilisée.
+- **Les résultats doivent être nuancés.** Le réseau est réutilisé d'une partition à l'autre et la sélection du meilleur modèle n'est pas correctement mise à jour ; les résultats finaux sont ensuite calculés sur l'ensemble des données. La comparaison ne constitue donc pas une évaluation indépendante et rigoureuse de la généralisation.
 
 ## Results and learnings / Résultats et apprentissages
 
-🇬🇧 **EN -** The report gives the following results for its experiments. The matrices list actual and predicted classes in the order `2` (malignant), `4` (benign):
+🇬🇧 **EN - High accuracy is not the whole story.** The report’s figures look strong, but they come from experiments that are not consistently reproduced by the checked-in script, and overall accuracy hides errors on malignant cases.
 
-| Experiment | Reported result or calculation | Archived confusion matrix |
-| --- | ---: | ---: |
-| Feedforward network described as nonlinear in the report | 564/569 = 99.12% | `[[207, 5], [0, 357]]` |
-| PSO | 555/569 = 97.53% in the report; 97.54% from the counts | `[[201, 11], [3, 354]]` |
-| Linear-activation network | 96.31% in the report; 547/569 = 96.13% from its archived matrix | `[[191, 21], [1, 356]]` |
+| Experiment | Reported result or calculation |
+| --- | ---: |
+| Feedforward network described as nonlinear in the report | 564/569 = 99.12% |
+| PSO | 555/569 = 97.53% in the report; 97.54% from the counts |
+| Linear-activation network | 96.31% in the report; 547/569 = 96.13% from its archived matrix |
 
-The corresponding matrices are available for the [network](medias/nn_confusion_matrix.png), [PSO](medias/pso_confusion_matrix.png), and [linear network](medias/nn_linear_confusion_matrix.png). The report contradicts itself about the network: it mentions five malignant samples predicted as benign, then claims there were none; the archived matrix confirms five such errors. For PSO, the report states that three malignant samples were predicted as benign; however, reading the archived matrix in actual/predicted class order `2`, `4` shows 11 such errors. The linear-network matrix shows 21 malignant samples predicted as benign and one benign sample predicted as malignant. The image labels are `1` and `2` because the charts were generated from matrix counts; they correspond to classes `2` and `4`, respectively. These differences matter because overall accuracy alone does not show which class is misclassified.
+The archived matrices are available for the [network](medias/nn_confusion_matrix.png), [PSO](medias/pso_confusion_matrix.png), and [linear network](medias/nn_linear_confusion_matrix.png). They reveal why accuracy alone can mislead: the number of malignant cases predicted as benign ranges from 5 to 21. The report itself is inconsistent: it first mentions five such network errors, then says there were none; for PSO it says three, while the matrix shows 11. The confusion-chart labels `1` and `2` correspond to class codes `2` and `4`, respectively.
 
-These figures are not an independent evaluation and must not be interpreted as clinical performance. The report's 96.31% for the linear network also differs from the 547 correct predictions out of 569 visible in its archived matrix (96.13%). Finally, the currently versioned script explicitly sets linear activations, so it does not directly reproduce the nonlinear-network experiment associated with the report's 99.12%. The saved figures represent different experiments and are not all outputs of one consistent run of the current script.
-
-A more reliable comparison would fit an independent model in each fold, update best-model selection correctly, fit normalization only on training data, and reserve a final test set or use nested cross-validation. It should also fix random seeds, preserve experiment settings alongside saved figures, and report per-class metrics in addition to accuracy, given the class imbalance.
+Treat these numbers as reported project results, not as a reliable estimate of generalization or clinical performance. The checked-in script uses linear activations, so it does not reproduce the nonlinear network associated with 99.12%; saved figures also come from different experiments. A stronger comparison would initialize an independent model per fold, fix model selection and random seeds, normalize using training data only, and reserve an independent test set (or use nested cross-validation). Reporting per-class metrics alongside accuracy would make class-specific errors visible.
 
 <br>
 
-🇫🇷 **FR -** Le rapport présente les résultats suivants pour ses expériences. Les matrices indiquent les classes réelles puis prédites dans l'ordre `2` (malin), `4` (bénin) :
+🇫🇷 **FR - Une forte exactitude ne dit pas tout.** Les chiffres du rapport paraissent élevés, mais ils proviennent d'expériences que le script versionné ne reproduit pas toutes de façon cohérente, et l'exactitude globale masque les erreurs sur les cas malins.
 
-| Expérience | Résultat rapporté ou calculé | Matrice de confusion archivée |
-| --- | ---: | ---: |
-| Réseau feedforward décrit comme non linéaire dans le rapport | 564/569 = 99,12 % | `[[207, 5], [0, 357]]` |
-| PSO | 555/569 = 97,53 % dans le rapport ; 97,54 % d'après les comptes | `[[201, 11], [3, 354]]` |
-| Réseau à activations linéaires | 96,31 % dans le rapport ; 547/569 = 96,13 % d'après sa matrice archivée | `[[191, 21], [1, 356]]` |
+| Expérience | Résultat rapporté ou calculé |
+| --- | ---: |
+| Réseau feedforward décrit comme non linéaire dans le rapport | 564/569 = 99,12 % |
+| PSO | 555/569 = 97,53 % dans le rapport ; 97,54 % d'après les comptes |
+| Réseau à activations linéaires | 96,31 % dans le rapport ; 547/569 = 96,13 % d'après sa matrice archivée |
 
-Les matrices correspondantes sont disponibles pour le [réseau](medias/nn_confusion_matrix.png), le [PSO](medias/pso_confusion_matrix.png) et le [réseau linéaire](medias/nn_linear_confusion_matrix.png). Le rapport se contredit au sujet du réseau : il mentionne cinq échantillons malins prédits bénins, puis affirme qu'il n'y en a aucun ; la matrice archivée confirme cinq erreurs de ce type. Pour le PSO, le rapport indique trois échantillons malins prédits bénins ; toutefois, la matrice archivée, lue dans l'ordre des classes réelles et prédites `2`, `4`, en montre 11. La matrice du réseau linéaire montre 21 échantillons malins prédits bénins et un échantillon bénin prédit malin. Les graphiques affichent les étiquettes `1` et `2`, car ils sont tracés à partir des comptes matriciels ; elles correspondent respectivement aux classes `2` et `4`. Ces écarts sont importants, car l'exactitude globale ne montre pas quelle classe est mal classée.
+Les matrices archivées sont disponibles pour le [réseau](medias/nn_confusion_matrix.png), le [PSO](medias/pso_confusion_matrix.png) et le [réseau linéaire](medias/nn_linear_confusion_matrix.png). Elles montrent pourquoi l'exactitude seule peut être trompeuse : le nombre de cas malins prédits bénins varie de 5 à 21. Le rapport se contredit : il mentionne d'abord cinq erreurs de ce type pour le réseau, puis affirme qu'il n'y en a aucune ; pour le PSO, il en annonce trois alors que la matrice en montre 11. Les étiquettes `1` et `2` des graphiques de confusion correspondent respectivement aux codes de classe `2` et `4`.
 
-Ces chiffres ne constituent pas une évaluation indépendante et ne doivent pas être interprétés comme une performance clinique. Les 96,31 % annoncés dans le rapport pour le réseau linéaire diffèrent aussi des 547 prédictions correctes sur 569 visibles dans sa matrice archivée (96,13 %). Enfin, le script actuellement versionné impose des activations linéaires ; il ne reproduit donc pas directement l'expérience de réseau non linéaire associée aux 99,12 % du rapport. Les figures sauvegardées représentent différentes expériences et ne proviennent pas toutes d'une même exécution cohérente du script actuel.
-
-Une comparaison plus fiable consisterait à entraîner un modèle indépendant dans chaque partition, à corriger la sélection du meilleur modèle, à ajuster la normalisation uniquement sur les données d'entraînement, puis à réserver un jeu de test final ou à utiliser une validation croisée imbriquée. Il faudrait également fixer les graines aléatoires, conserver les paramètres des expériences avec les figures sauvegardées et rapporter des métriques par classe en plus de l'exactitude, compte tenu du déséquilibre des classes.
+Ces chiffres sont des résultats rapportés pour le projet, pas une estimation fiable de la généralisation ni une performance clinique. Le script versionné utilise des activations linéaires : il ne reproduit donc pas le réseau non linéaire associé aux 99,12 %. Les figures archivées proviennent également d'expériences différentes. Une comparaison plus solide entraînerait un modèle indépendant par partition, corrigerait la sélection du modèle et fixerait les graines aléatoires, ajusterait la normalisation uniquement sur les données d'entraînement, puis réserverait un jeu de test indépendant (ou utiliserait une validation croisée imbriquée). Des métriques par classe, en complément de l'exactitude, rendraient les erreurs propres à chaque classe plus visibles.
 
 ## Getting started
 
@@ -136,3 +149,7 @@ The script prints fold MSEs and class-distribution summaries in the MATLAB comma
 - `wdbc.dat` et `opis.txt` : jeu de données source et sa description.
 - `VAJA4.pdf` et `ISDS_VAJA4.pdf` : consignes du travail et rapport du projet.
 - `medias/` : graphiques et matrices de confusion sauvegardés.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
