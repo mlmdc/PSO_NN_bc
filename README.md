@@ -136,19 +136,29 @@ The script prints fold MSEs and class-distribution summaries in the MATLAB comma
 
 ## Repository contents / Structure du dépôt
 
-- `PSO_NN_bc.m`: training, cross-validation, PSO optimization, and plots.
-- `wdbc_data.mat`: numeric matrix loaded by the script.
-- `best_network.mat`: saved network file; it is not loaded by `PSO_NN_bc.m`.
-- `wdbc.dat` and `opis.txt`: source dataset and dataset description.
-- `VAJA4.pdf` and `ISDS_VAJA4.pdf`: assignment brief and project report.
-- `medias/`: saved output plots and confusion matrices.
+```text
+.
+├── LICENSE
+├── README.md
+├── PSO_NN_bc.m
+├── best_network.mat
+├── wdbc.dat
+├── wdbc_data.mat
+├── ISDS_VAJA4.pdf
+└── medias/
+    ├── Feedforward_linear_output.png
+    ├── Feedforward_output.png
+    ├── PSO_output.png
+    ├── nn_confusion_matrix.png
+    ├── nn_linear_confusion_matrix.png
+    ├── pso_confusion_matrix.png
+    ├── sorted_linear.png
+    └── sorted_nonlinear.png
+```
 
-- `PSO_NN_bc.m` : entraînement, validation croisée, optimisation PSO et graphiques.
-- `wdbc_data.mat` : matrice numérique chargée par le script.
-- `best_network.mat` : fichier contenant un réseau sauvegardé ; `PSO_NN_bc.m` ne le charge pas.
-- `wdbc.dat` et `opis.txt` : jeu de données source et sa description.
-- `VAJA4.pdf` et `ISDS_VAJA4.pdf` : consignes du travail et rapport du projet.
-- `medias/` : graphiques et matrices de confusion sauvegardés.
+`PSO_NN_bc.m` contains the training, cross-validation, PSO optimization, and plot generation. `wdbc_data.mat` is the matrix loaded by the script; `best_network.mat` is a saved network that the script does not load. `wdbc.dat` is the source dataset, `ISDS_VAJA4.pdf` is the project report, and `medias/` contains the plots and confusion matrices.
+
+`PSO_NN_bc.m` contient l'entraînement, la validation croisée, l'optimisation PSO et la génération des graphiques. `wdbc_data.mat` est la matrice chargée par le script ; `best_network.mat` est un réseau sauvegardé, mais le script ne le charge pas. `wdbc.dat` est le jeu de données source, `ISDS_VAJA4.pdf` est le rapport du projet et `medias/` regroupe les graphiques et matrices de confusion.
 
 ## License
 
