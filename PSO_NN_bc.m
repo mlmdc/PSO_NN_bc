@@ -1,6 +1,6 @@
 %% Initialization
 clc; clear; close all;
-load("data.mat")
+load("wdbc_data.mat")
 
 %% Functions
 function [mind, maxd, standard_data] = standardizeData(data)
@@ -154,7 +154,7 @@ end
 avgPerformance = mean(cumul_perf);
 fprintf('Average Performance: %.4f\n', avgPerformance);
 %}
-%load("bestNet.mat");
+%load("best_network.mat");
 
 bestOutput = bestNet(data(:, 2:end)');
 bestClassOutput = classifyData(bestOutput, 2, 4);
@@ -244,6 +244,5 @@ for i=1:30
 end
 
 grid on;
-
 
 

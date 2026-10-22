@@ -25,13 +25,13 @@
 
 🇬🇧 **EN -** The dataset contains 569 samples: 357 benign and 212 malignant. Each sample has an ID, a diagnosis, and 30 numeric measurements: the mean, standard error, and "worst" value (mean of the three largest values) for ten nucleus characteristics: radius, texture, perimeter, area, smoothness, compactness, concavity, concave points, symmetry, and fractal dimension.
 
-The included `data.mat` contains the 569-by-31 matrix named `data` that the script loads. Column 1 contains numeric labels (`2` = malignant, `4` = benign); the remaining columns are the 30 features. `wdbc.dat` is the source dataset, with diagnoses encoded as `M` and `B`.
+The included `wdbc_data.mat` contains the 569-by-31 matrix named `data` that the script loads. Column 1 contains numeric labels (`2` = malignant, `4` = benign); the remaining columns are the 30 features. `wdbc.dat` is the source dataset, with diagnoses encoded as `M` and `B`.
 
 <br>
 
 🇫🇷 **FR -** Le jeu contient 569 échantillons : 357 bénins et 212 malins. Chaque échantillon comprend un identifiant, un diagnostic et 30 mesures numériques : la moyenne, l'erreur standard et la valeur « worst » (moyenne des trois valeurs les plus élevées) de dix caractéristiques des noyaux cellulaires : rayon, texture, périmètre, aire, régularité, compacité, concavité, points concaves, symétrie et dimension fractale.
 
-Le fichier `data.mat` fourni contient la matrice `data` de 569 lignes et 31 colonnes que charge le script. La première colonne contient les classes numériques (`2` = malin, `4` = bénin) ; les 30 autres contiennent les caractéristiques. `wdbc.dat` est le jeu source, dont les diagnostics sont encodés `M` et `B`.
+Le fichier `wdbc_data.mat` fourni contient la matrice `data` de 569 lignes et 31 colonnes que charge le script. La première colonne contient les classes numériques (`2` = malin, `4` = bénin) ; les 30 autres contiennent les caractéristiques. `wdbc.dat` est le jeu source, dont les diagnostics sont encodés `M` et `B`.
 
 ## Problem and approach / Problématique et démarche
 
@@ -61,7 +61,7 @@ flowchart LR
 ```
 
 - **The comparison is about the optimizer, not just the model.** The network uses Levenberg–Marquardt (`trainlm`) and the report describes 20-fold cross-validation; PSO uses 10-fold cross-validation. Both ultimately classify with a threshold of 3, halfway between class codes 2 and 4.
-- **The checked-in implementation is the source of truth.** `lab4.m` sets both network layers to `purelin`, so the implemented network is linear—even though the report also describes a nonlinear experiment. It also leaves features unnormalized, despite including an unused min-max helper.
+- **The checked-in implementation is the source of truth.** `PSO_NN_bc.m` sets both network layers to `purelin`, so the implemented network is linear—even though the report also describes a nonlinear experiment. It also leaves features unnormalized, despite including an unused min-max helper.
 - **The scores need qualification.** The network is reused across folds and best-model selection is not correctly updated; final figures are then produced on the full dataset. These choices mean the reported results are not a clean, independent comparison of generalization.
 
 <br>
@@ -80,7 +80,7 @@ flowchart LR
 ```
 
 - **La comparaison porte sur l'optimisation, pas seulement sur le modèle.** Le réseau utilise Levenberg–Marquardt (`trainlm`) et le rapport décrit une validation croisée à 20 partitions ; le PSO utilise 10 partitions. Les deux méthodes classent finalement à l'aide d'un seuil de 3, situé à mi-chemin entre les codes de classe 2 et 4.
-- **Le code versionné fait foi.** `lab4.m` définit `purelin` pour les deux couches du réseau : l'implémentation est donc linéaire, même si le rapport décrit aussi une expérience non linéaire. Les caractéristiques ne sont pas normalisées, malgré la présence d'une fonction min-max qui n'est pas utilisée.
+- **Le code versionné fait foi.** `PSO_NN_bc.m` définit `purelin` pour les deux couches du réseau : l'implémentation est donc linéaire, même si le rapport décrit aussi une expérience non linéaire. Les caractéristiques ne sont pas normalisées, malgré la présence d'une fonction min-max qui n'est pas utilisée.
 - **Les résultats doivent être nuancés.** Le réseau est réutilisé d'une partition à l'autre et la sélection du meilleur modèle n'est pas correctement mise à jour ; les résultats finaux sont ensuite calculés sur l'ensemble des données. La comparaison ne constitue donc pas une évaluation indépendante et rigoureuse de la généralisation.
 
 ## Results and learnings / Résultats et apprentissages
@@ -124,11 +124,11 @@ MATLAB, Deep Learning Toolbox (anciennement Neural Network Toolbox) et Statistic
 ### Run
 
 1. Clone this repository and open its directory in MATLAB.
-2. Run the command from the repository root, where the included `data.mat` is located. The script loads this file directly.
+2. Run the command from the repository root, where the included `wdbc_data.mat` is located. The script loads this file directly.
 3. Run:
 
 ```matlab
-run("lab4.m")
+run("PSO_NN_bc.m")
 ```
 
 The script prints fold MSEs and class-distribution summaries in the MATLAB command window, then opens output plots and confusion charts. It does not automatically save newly trained models or figures. Results may vary between runs because cross-validation partitions and PSO initialization are random and no random seed is set.
@@ -136,16 +136,16 @@ The script prints fold MSEs and class-distribution summaries in the MATLAB comma
 
 ## Repository contents / Structure du dépôt
 
-- `lab4.m`: training, cross-validation, PSO optimization, and plots.
-- `data.mat`: numeric matrix loaded by the script.
-- `bestNet.mat`: saved network file; it is not loaded by `lab4.m`.
+- `PSO_NN_bc.m`: training, cross-validation, PSO optimization, and plots.
+- `wdbc_data.mat`: numeric matrix loaded by the script.
+- `best_network.mat`: saved network file; it is not loaded by `PSO_NN_bc.m`.
 - `wdbc.dat` and `opis.txt`: source dataset and dataset description.
 - `VAJA4.pdf` and `ISDS_VAJA4.pdf`: assignment brief and project report.
 - `medias/`: saved output plots and confusion matrices.
 
-- `lab4.m` : entraînement, validation croisée, optimisation PSO et graphiques.
-- `data.mat` : matrice numérique chargée par le script.
-- `bestNet.mat` : fichier contenant un réseau sauvegardé ; `lab4.m` ne le charge pas.
+- `PSO_NN_bc.m` : entraînement, validation croisée, optimisation PSO et graphiques.
+- `wdbc_data.mat` : matrice numérique chargée par le script.
+- `best_network.mat` : fichier contenant un réseau sauvegardé ; `PSO_NN_bc.m` ne le charge pas.
 - `wdbc.dat` et `opis.txt` : jeu de données source et sa description.
 - `VAJA4.pdf` et `ISDS_VAJA4.pdf` : consignes du travail et rapport du projet.
 - `medias/` : graphiques et matrices de confusion sauvegardés.
