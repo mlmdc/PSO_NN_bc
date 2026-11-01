@@ -1,4 +1,14 @@
-# Breast Cancer Classification with PSO and Neural Networks / Classification du cancer du sein par PSO et réseaux de neurones
+<p align="center">
+  <img src="medias/pso_nn_icons.png" alt="Illustration de la classification par essaim de particule." width="70%">
+</p>
+
+<h1 align="center">PSO Classification</h1>
+
+<p align="left">
+  <strong>🇬🇧 EN - </strong> A comparison of breast-cancer classification methods based on particle-swarm optimisation and neural networks.<br>
+  <strong>🇫🇷 FR - </strong> Étude comparative de méthodes de classification du cancer du sein, fondées sur l’optimisation par essaim particulaire et les réseaux de neurones.
+</p>
+
 
 🇬🇧 **EN -** This educational project studies binary classification of breast masses from 30 measurements extracted from fine-needle aspirate images. It compares a thresholded linear classifier whose weights are optimized by Particle Swarm Optimization (PSO) with feedforward neural-network experiments on the Wisconsin Diagnostic Breast Cancer (WDBC) dataset. The checked-in MATLAB script currently uses linear activations for its network; the report also describes a nonlinear-network experiment. Neither the data nor the reported results establish clinical performance.<br>
 
@@ -6,11 +16,6 @@
 
 [← Back to portfolio](https://mlmdc.github.io/mlmdc_portfolio/) · [Sommaire / Contents](#sommaire--contents)
 
-![PSO predictions and reference labels across the samples](medias/PSO_output.png)
-
-*The plot compares the PSO predictions with the reference labels in sample order. It shows the full-dataset output from the script, not an independent test evaluation.*
-
-*Le graphique compare les prédictions du PSO aux classes de référence, dans l'ordre des échantillons. Il montre la sortie du script sur l'ensemble des données, et non une évaluation indépendante sur un jeu de test.*
 
 ## Sommaire / Contents
 
