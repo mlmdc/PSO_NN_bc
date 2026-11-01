@@ -4,10 +4,10 @@
 
 <h1 align="center">PSO Classification</h1>
 
-<p align="left">
+<!--<p align="left">
   <strong>🇬🇧 EN - </strong> A comparison of breast-cancer classification methods based on particle-swarm optimisation and neural networks.<br>
   <strong>🇫🇷 FR - </strong> Étude comparative de méthodes de classification du cancer du sein, fondées sur l’optimisation par essaim particulaire et les réseaux de neurones.
-</p>
+</p>-->
 
 
 🇬🇧 **EN -** This educational project studies binary classification of breast masses from 30 measurements extracted from fine-needle aspirate images. It compares a thresholded linear classifier whose weights are optimized by Particle Swarm Optimization (PSO) with feedforward neural-network experiments on the Wisconsin Diagnostic Breast Cancer (WDBC) dataset. The checked-in MATLAB script currently uses linear activations for its network; the report also describes a nonlinear-network experiment. Neither the data nor the reported results establish clinical performance.<br>
