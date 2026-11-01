@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="medias/pso_nn_icons.png" alt="Illustration de la classification par essaim de particule." width="70%">
+  <img src="medias/pso_nn_icons.png" alt="Illustration de la classification par essaim de particule." width="85%">
 </p>
 
 <h1 align="center">PSO Classification</h1>
